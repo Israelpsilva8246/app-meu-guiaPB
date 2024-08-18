@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Meu Guia PB</string>
+    <string name="homeView">Home</string>
+    <string name="back_button">Voltar</string>
+    <string name="listAttractiveView">Atrativos</string>
+    <string name="find_attraction">Buscar</string>
+    <string name="find_attraction_by_name">Nome</string>
+    <string name="find_attraction_by_city">Cidade</string>
+    <string name="find_attraction_by_seg">Segmentação Turística</string>
+    <string name="find_attraction_by_type">Tipo de Atrativo</string>
+    <string name="find_options_view">Buscar por…</string>
+    <string name="attractiveView">Attraction Detail</string>
+    <string name="refresh">Recarregar</string>
+    <string name="menu">Menu</string>
+    <string name="sobre">Sobre</string>
+</resources>
