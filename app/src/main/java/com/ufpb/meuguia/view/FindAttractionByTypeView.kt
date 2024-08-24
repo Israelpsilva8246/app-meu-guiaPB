@@ -80,7 +80,7 @@ fun FindAttractionByTypeView(
                     ),
                     title = {
                         Text(
-                            text = stringResource(R.string.find_attraction),
+                            text = stringResource(R.string.find_attraction_type),
                             fontWeight = FontWeight.Normal,
                             modifier = Modifier.fillMaxWidth(),
                             style = MaterialTheme.typography.titleLarge

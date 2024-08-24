@@ -1,27 +1,20 @@
 package com.ufpb.meuguia.view
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
-import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -46,17 +39,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import coil.size.Scale
-import coil.transform.CircleCropTransformation
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ufpb.meuguia.R
@@ -68,7 +61,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun ListAttractiveView(navController: NavController, viewModel: AttractionViewModel = viewModel()) {
 
-    val isLoading = viewModel.isLoading.collectAsState()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
 
@@ -121,17 +113,6 @@ fun ListAttractiveView(navController: NavController, viewModel: AttractionViewMo
                         viewModel = viewModel,
                         navController = navController
                     )
-
-                    if (isLoading.value) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color(0x99000000)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
                 }
             }
         )
@@ -178,13 +159,20 @@ fun ListAttraction(
                 viewModel.getAttractionList()
             }
         ) {
-            LazyColumn {
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxSize()
+            ) {
                 items(viewModel.attractionListResponse) { attractive ->
                     Card(
                         modifier = Modifier
-                            .padding(8.dp, 4.dp)
                             .fillMaxWidth()
-                            .height(150.dp)
+                            .aspectRatio(1f)
                             .clickable {
                                 navController.navigate("attractiveView/${attractive.id}")
                             },
@@ -194,81 +182,44 @@ fun ListAttraction(
                         )
                     ) {
                         Surface {
-                            Row(
+                            Column(
                                 Modifier
-                                    .padding(4.dp)
+                                    .padding(8.dp) // Aumentar o padding para mais espaço
                                     .fillMaxSize()
                             ) {
-                                Image(
-                                    painter = rememberAsyncImagePainter(
-                                        ImageRequest.Builder(LocalContext.current)
-                                            .data(attractive.image_link)
-                                            .apply {
-                                                scale(Scale.FILL)
-                                                transformations(CircleCropTransformation())
-                                            }
-                                            .build()
-                                    ),
-                                    contentDescription = attractive.state,
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(attractive.image_link)
+                                        .crossfade(true)
+                                        .build(),
+                                    contentDescription = stringResource(R.string.app_name),
+                                    contentScale = ContentScale.Crop,
                                     modifier = Modifier
-                                        .fillMaxHeight()
-                                        .weight(0.2f)
+                                        .fillMaxWidth()
+                                        .height(120.dp) // Aumentar a altura para dar mais espaço ao texto abaixo
+                                        .clip(RoundedCornerShape(8.dp))
                                 )
-                                Column(
-                                    verticalArrangement = Arrangement.Center,
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .fillMaxHeight()
-                                        .weight(0.8f)
-                                ) {
+                                Column {
                                     Text(
                                         text = attractive.name,
-                                        style = MaterialTheme.typography.titleLarge,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        text = attractive.city,
-                                        style = MaterialTheme.typography.labelSmall,
+                                        style = MaterialTheme.typography.bodyMedium,
                                         modifier = Modifier
-                                            .background(Color.LightGray)
-                                            .padding(4.dp)
+                                            .padding(top = 12.dp) // Mais espaço acima do texto
+                                            .align(Alignment.CenterHorizontally)
                                     )
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier
-                                            .padding(bottom = 4.dp)
-                                            .clickable {
-                                                val mapLink = attractive.map_link
-                                                if (mapLink.isNotEmpty() && (mapLink.startsWith("https://maps.app.goo.gl/") || mapLink.startsWith("https://goo.gl/maps/"))) {
-                                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(mapLink))
-                                                    try {
-                                                        context.startActivity(intent)
-                                                    } catch (e: ActivityNotFoundException) {
-                                                        Toast.makeText(context, "Nenhum aplicativo pode lidar com essa solicitação. Instale um navegador da web ou aplicativo de mapas", Toast.LENGTH_LONG).show()
-                                                    } catch (e: Exception) {
-                                                        Toast.makeText(context, "Link do maps inválido.", Toast.LENGTH_SHORT).show()
-                                                    }
-                                                } else {
-                                                    Toast.makeText(context, "Link do maps inválido.", Toast.LENGTH_SHORT).show()
-                                                }
-                                            }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.LocationOn,
-                                            contentDescription = "Location Icon",
-                                            tint = MaterialTheme.colorScheme.primary,
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    }
                                 }
+
                             }
+
                         }
                     }
                 }
             }
         }
+
     }
 }
+
 
 @Composable
 fun DrawerContent(
@@ -282,17 +233,6 @@ fun DrawerContent(
     )
 
     HorizontalDivider()
-
-    Text(
-        text = stringResource(R.string.refresh),
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier
-            .padding(16.dp)
-            .clickable {
-                viewModel.getAttractionList()
-            }
-    )
 
     Text(
         text = stringResource(R.string.find_options_view),

@@ -35,7 +35,7 @@ interface ApiService {
     suspend fun getAttractionSeg(): List<TurismSegmentation>
 
     companion object {
-        private const val BASE_URL = "https://0334-190-111-131-121.ngrok-free.app/"
+        private const val BASE_URL = ""
         private const val TIMEOUT_SECONDS = 30L
 
         private var apiService: ApiService? = null

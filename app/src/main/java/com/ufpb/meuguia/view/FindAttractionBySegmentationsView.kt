@@ -79,7 +79,7 @@ fun FindAttractionBySegmentationsView(
                     ),
                     title = {
                         Text(
-                            text = stringResource(R.string.find_attraction),
+                            text = stringResource(R.string.find_attraction_segmentantion),
                             fontWeight = FontWeight.Normal,
                             modifier = Modifier.fillMaxWidth(),
                             style = MaterialTheme.typography.titleLarge

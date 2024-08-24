@@ -4,6 +4,10 @@
     <string name="back_button">Voltar</string>
     <string name="listAttractiveView">Atrativos</string>
     <string name="find_attraction">Buscar</string>
+    <string name="find_attraction_name">Buscar por nome</string>
+    <string name="find_attraction_segmentantion">Buscar por segmentação</string>
+    <string name="find_attraction_type">Buscar por tipo</string>
+    <string name="find_attraction_city">Buscar por cidade</string>
     <string name="find_attraction_by_name">Nome</string>
     <string name="find_attraction_by_city">Cidade</string>
     <string name="find_attraction_by_seg">Segmentação Turística</string>

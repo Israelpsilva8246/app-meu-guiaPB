@@ -237,50 +237,60 @@ fun AttractionDetail(
 
                         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                        Text(
-                            text = "Descrição:",
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text(
+                                text = "Descrição:",
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
 
-                        Text(
-                            text = attraction.description,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                            Text(
+                                text = attraction.description,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+
 
                         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                        if (attraction.moreInfoLinkList.isNotEmpty()) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .padding(bottom = 4.dp)
-                            ) {
-                                Text(
-                                    text = "Para mais informações acesse: ",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(bottom = 4.dp),
-                                )
-                            }
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            if (attraction.moreInfoLinkList.isNotEmpty()) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .padding(bottom = 4.dp)
+                                ) {
+                                    Text(
+                                        text = "Para mais informações acesse: ",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(bottom = 4.dp),
+                                    )
+                                }
 
-                            attraction.moreInfoLinkList.forEach { moreInfoLink ->
-                                Text(
-                                    text = "- ${moreInfoLink.description}",
-                                    fontWeight = FontWeight.Bold,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.clickable {
-                                        val intent = Intent(
-                                            Intent.ACTION_VIEW,
-                                            Uri.parse(moreInfoLink.link)
-                                        )
-                                        context.startActivity(intent)
-                                    }
-                                )
+                                attraction.moreInfoLinkList.forEach { moreInfoLink ->
+                                    Text(
+                                        text = "- ${moreInfoLink.description}",
+                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.clickable {
+                                            val intent = Intent(
+                                                Intent.ACTION_VIEW,
+                                                Uri.parse(moreInfoLink.link)
+                                            )
+                                            context.startActivity(intent)
+                                        }
+                                    )
+                                }
                             }
                         }
+
                     }
                 }
             }
