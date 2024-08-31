@@ -60,20 +60,35 @@ fun FindGrid(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-    LazyVerticalGrid(
-        modifier = modifier.padding(20.dp),
-        columns = GridCells.Fixed(1),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp)
-    ) {
-        items(getMainItems()) { item ->
-            MainButton(
-                text = item.text,
-                onClick = { navController.navigate(item.nav) }
-            )
-        }
-    }
+    val itemsList = getMainItems()
 
+    if (itemsList.isNotEmpty()) {
+        LazyVerticalGrid(
+            modifier = modifier.padding(20.dp),
+            columns = GridCells.Fixed(1),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp)
+        ) {
+            items(itemsList) { item ->
+                MainButton(
+                    text = item.text,
+                    onClick = {
+                        if (item.nav.isNotEmpty()) {
+                            navController.navigate(item.nav)
+                        }
+                    }
+                )
+            }
+        }
+    } else {
+        // Exibe uma mensagem ou visualização alternativa quando a lista estiver vazia
+        Text(
+            text = stringResource(id = R.string.atrativo_nao_encontrado),
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = modifier.padding(16.dp)
+        )
+    }
 }
+
 

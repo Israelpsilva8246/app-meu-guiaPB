@@ -11,13 +11,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class AttractionViewModel() : ViewModel() {
+class AttractionViewModel : ViewModel() {
 
     var attractionListResponse: List<Attraction> by mutableStateOf(listOf())
     var errorMessage: String by mutableStateOf("")
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
+
+    private val _isListEmpty = MutableStateFlow(false)
+    val isListEmpty: StateFlow<Boolean> = _isListEmpty
 
     fun getAttractionList() {
         viewModelScope.launch {
@@ -26,6 +29,7 @@ class AttractionViewModel() : ViewModel() {
                 val apiService = ApiService.getInstance()
                 val attractionList = apiService.getAttractions()
                 attractionListResponse = attractionList
+                _isListEmpty.value = attractionList.isEmpty()
             } catch (e: Exception) {
                 errorMessage = e.message.toString()
             } finally {

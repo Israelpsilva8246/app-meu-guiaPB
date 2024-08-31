@@ -17,4 +17,5 @@
     <string name="refresh">Recarregar</string>
     <string name="menu">Menu</string>
     <string name="sobre">Sobre</string>
+    <string name="atrativo_nao_encontrado">Nenhum atrativo encontrado</string>
 </resources>

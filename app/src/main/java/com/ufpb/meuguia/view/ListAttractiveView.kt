@@ -1,5 +1,6 @@
 package com.ufpb.meuguia.view
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -63,6 +66,7 @@ fun ListAttractiveView(navController: NavController, viewModel: AttractionViewMo
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
+    val isListEmpty = viewModel.isListEmpty.collectAsState().value
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -72,53 +76,56 @@ fun ListAttractiveView(navController: NavController, viewModel: AttractionViewMo
             }
         }
     ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                    title = {
-                        Text(
-                            text = stringResource(R.string.app_name),
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.fillMaxWidth(),
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            coroutineScope.launch {
-                                drawerState.open()
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Menu,
-                                contentDescription = stringResource(R.string.menu),
-                                tint = MaterialTheme.colorScheme.onPrimary
+        if (isListEmpty) {
+            EmptyListDialog()
+        } else {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                        ),
+                        title = {
+                            Text(
+                                text = stringResource(R.string.app_name),
+                                fontWeight = FontWeight.Normal,
+                                modifier = Modifier.fillMaxWidth(),
+                                style = MaterialTheme.typography.titleLarge
                             )
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = {
+                                coroutineScope.launch {
+                                    drawerState.open()
+                                }
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Menu,
+                                    contentDescription = stringResource(R.string.menu),
+                                    tint = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
                         }
-                    }
-                )
-            },
-            content = {
-                Box(
-                    modifier = Modifier
-                        .padding(it)
-                        .fillMaxSize()
-                ) {
-                    ListAttraction(
-                        modifier = Modifier.fillMaxSize(),
-                        viewModel = viewModel,
-                        navController = navController
                     )
+                },
+                content = {
+                    Box(
+                        modifier = Modifier
+                            .padding(it)
+                            .fillMaxSize()
+                    ) {
+                        ListAttraction(
+                            modifier = Modifier.fillMaxSize(),
+                            viewModel = viewModel,
+                            navController = navController
+                        )
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 }
-
 
 @Composable
 fun ListAttraction(
@@ -254,6 +261,29 @@ fun DrawerContent(
             .clickable {
                 navController.navigate(Destinations.ABOUT.name)
             }
+    )
+}
+
+@Composable
+fun EmptyListDialog() {
+    val activity = LocalContext.current as? Activity
+
+    AlertDialog(
+        onDismissRequest = {},
+        title = {
+            Text(text = stringResource(id = R.string.atrativo_nao_encontrado))
+        },
+        text = {
+            Text("Não há atrativos disponíveis no momento. Por favor, adicione atrativos usando o Postman.")
+        },
+        confirmButton = {
+            Button(onClick = {
+                activity?.finishAffinity() // Fecha o aplicativo
+            }) {
+                Text("Ok")
+            }
+        },
+        modifier = Modifier.background(Color.White)
     )
 }
 
